@@ -25,13 +25,18 @@ public class User {
     @Column(name = "PASSWORD", nullable = false, length = 50)
     private String password;
 
-    @Column(name = "TYPE", nullable = false, length = 50)
-    private String type;
+    @ManyToOne
+    @JoinColumn(name="type")
+    private TypeUser type;
 
     @Column(name = "CPF", length = 50)
     private String cpf;
 
     @Column(name = "CNPJ", length = 50)
     private String cnpj;
+
+    @ManyToOne
+    @JoinColumn(name="id_wallet")
+    private Wallet wallet;
 
 }
