@@ -1,7 +1,10 @@
 package com.picpay.backend_pagamento.controllers;
 
+import com.picpay.backend_pagamento.dto.UserDTO;
 import com.picpay.backend_pagamento.entities.User;
+import com.picpay.backend_pagamento.mappers.UserMapper;
 import com.picpay.backend_pagamento.repositories.UserRepository;
+import com.picpay.backend_pagamento.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,14 +17,21 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private UserService userService;
+
     @RequestMapping(method = RequestMethod.GET)
     public Iterable<User> all() {
         return userRepository.findAll();
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public User newUser(@RequestBody User newUser) {
-        return userRepository.save(newUser);
+    public User newUser(@RequestBody UserDTO userDTO) {
+        User newUser = userMapper.toEntity(userDTO);
+        return userService.newUser(newUser);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
