@@ -6,8 +6,10 @@ import com.picpay.backend_pagamento.mappers.UserMapper;
 import com.picpay.backend_pagamento.repositories.UserRepository;
 import com.picpay.backend_pagamento.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -24,8 +26,9 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public Iterable<User> all() {
-        return userRepository.findAll();
+    public ResponseEntity<List<UserDTO>> all() {
+        List<UserDTO> users = userService.findAllUserDto();
+        return ResponseEntity.ok(users);
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -35,8 +38,10 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public Optional<User> one(@PathVariable Long id) {
-        return userRepository.findById(id);
+    public ResponseEntity<UserDTO> one(@PathVariable Long id) {
+
+        UserDTO user = userService.findUserDto(id);
+        return ResponseEntity.ok(user);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value="/{id}")

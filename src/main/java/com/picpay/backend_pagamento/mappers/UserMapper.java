@@ -11,6 +11,8 @@ import org.mapstruct.Mappings;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
@@ -24,9 +26,12 @@ public interface UserMapper {
 
     @Mappings({
         @Mapping(source = "type", target = "type", qualifiedByName = "typeUserToString"),
-        @Mapping(source = "wallet", target = "ballance", qualifiedByName = "walletToLong")
+        @Mapping(source = "wallet", target = "ballance", qualifiedByName = "walletToLong"),
+        @Mapping(source = "password", target = "password", ignore = true)
     })
     UserDTO toDto(User user);
+
+    List<UserDTO> toDtoList(List<User> users);
 
     @Named("stringToTypeUser")
     default TypeUser stringToTypeUser(String type) {
