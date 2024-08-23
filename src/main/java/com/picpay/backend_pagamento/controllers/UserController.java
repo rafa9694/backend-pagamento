@@ -1,23 +1,18 @@
 package com.picpay.backend_pagamento.controllers;
 
 import com.picpay.backend_pagamento.dto.UserDTO;
-import com.picpay.backend_pagamento.entities.User;
 import com.picpay.backend_pagamento.mappers.UserMapper;
-import com.picpay.backend_pagamento.repositories.UserRepository;
 import com.picpay.backend_pagamento.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private UserMapper userMapper;
@@ -32,9 +27,8 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public User newUser(@RequestBody UserDTO userDTO) {
-        User newUser = userMapper.toEntity(userDTO);
-        return userService.newUser(newUser);
+    public UserDTO newUser(@RequestBody UserDTO userDTO) {
+        return userService.newUser(userDTO);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
@@ -45,21 +39,14 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value="/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userRepository.deleteById(id);
+    public  ResponseEntity deleteUser(@PathVariable Long id) {
+        userService.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value="/{id}")
-     public Optional<User> updateUser(@RequestBody User updateUser, @PathVariable Long id) {
-
-        return userRepository.findById(id)
-                .map(user -> {
-                    user.setName(updateUser.getName());
-                    user.setEmail(updateUser.getEmail());
-                    user.setPassword(updateUser.getPassword());
-                    user.setCpf(updateUser.getCpf());
-                    user.setCnpj(updateUser.getCnpj());
-                    return userRepository.save(user);
-                });
+    @RequestMapping(method = RequestMethod.PUT)
+     public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO updateUser) {
+        updateUser = userService.updateUser(updateUser);
+        return ResponseEntity.ok(updateUser);
     }
 }
